@@ -19,9 +19,8 @@ app.get('/index', (req, res) => {
 app.post('/index', (req, res) => {
     const { username, password } = req.body;
 
-    if (username && password) {
-        const userData = { username, referralCode: 'manas2301' }; 
-        res.json(userData);
+    if (username == test && password == password) {
+        res.status(200).json({ message: 'Login successful' });
     } else {
         res.status(401).json({ message: 'Login failed! Please check your username and password.' });
     }
