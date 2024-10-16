@@ -18,15 +18,15 @@ app.get('/index', (req, res) => {
 
 app.post('/index', (req, res) => {
     const { username, password } = req.body;
-    console.log(`Username: ${username}, Password: ${password}`); 
 
     if (username && password) {
-        const userData = { username, referralCode: 'manas2301' };
+        const userData = { username, referralCode: 'manas2301' }; 
         res.json(userData);
     } else {
-        res.status(401).json({ message: 'Login failed! Please provide a valid username and password.' });
+        res.status(401).json({ message: 'Login failed! Please check your username and password.' });
     }
 });
+
 
 
 
