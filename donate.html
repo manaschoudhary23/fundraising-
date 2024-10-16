@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Donation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PT Sans", sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+            width: 100%;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .success-message {
+            display: none;
+            color: green;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 18px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="number"],
+            button {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Thank You for Supporting NayePankh Foundation!</h2>
+        <p id="referralCodeDisplay">Referral Code: manas2301</p>
+
+        <form id="donationForm">
+            <input type="text" id="amount" placeholder="Donation Amount" required autocomplete="off" min="1">
+            <input type="text" id="donorName" placeholder="Your Name" required autocomplete="off" pattern="[A-Za-z\s]+" title="Please enter alphabetic characters only">
+            <input type="email" id="donorEmail" placeholder="Your Email" required autocomplete="off">
+            <input type="text" id="phoneNumber" placeholder="Your number (+91)" required autocomplete="new-password">
+            <input type="text" id="referralCode" value="manas2301" placeholder="Enter referral code" autocomplete="off">
+            <button type="submit">Make a Donation</button>
+        </form>
+        <p class="success-message" id="successMessage">Thank you for your donation!</p>
+    </div>
+
+    <script>
+        document.getElementById('donationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const amount = document.getElementById('amount').value;
+            const donorName = document.getElementById('donorName').value;
+            const donorEmail = document.getElementById('donorEmail').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const referralCode = document.getElementById('referralCode').value;
+
+            fetch('/donate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount, donorName, donorEmail, phoneNumber, referralCode }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('donationForm').reset();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+
+</body>
+
+</html>

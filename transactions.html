@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PT Sans", sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .referral-info {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .referral-info h4 {
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+
+        .no-transactions {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .referral-info h4 {
+                font-size: 14px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+                margin: 5px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            .referral-info h4 {
+                font-size: 12px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 6px;
+            }
+
+            th, td:first-child {
+                display: block;
+                width: 100%;
+            }
+
+            th:nth-child(n+2), td:nth-child(n+2) {
+                display: block;
+                width: 100%;
+                text-align: right;
+            }
+
+            td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Transaction History</h1>
+        <div class="referral-info">
+            <h4>Your Referral Code: <span id="referralCode">manas2301</span></h4>
+            <h4>Total Donations via Your Code: <span id="totalDonations">0.00</span></h4>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Donor Name</th>
+                    <th>Donation Amount ($)</th>
+                    <th>Date</th>
+                    <th>Referral Code</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTableBody">
+            </tbody>
+        </table>
+        <p class="no-transactions" id="noTransactionsMessage">No transactions available.</p>
+    </div>
+
+    <script>
+        const transactionTableBody = document.getElementById('transactionTableBody');
+        const noTransactionsMessage = document.getElementById('noTransactionsMessage');
+        const referralCodeElement = document.getElementById('referralCode');
+        const totalDonationsElement = document.getElementById('totalDonations');
+
+        const referralCode = "manas2301";
+        referralCodeElement.textContent = referralCode;
+
+        function populateTransactions() {
+            fetch('/transactions', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(transactions => {
+                if (transactions.length === 0) {
+                    noTransactionsMessage.style.display = 'block';
+                    return;
+                }
+
+                let totalDonations = 0;
+                transactions.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td data-label="Donor Name">${transaction.donorName}</td>
+                        <td data-label="Donation Amount">${transaction.amount}</td>
+                        <td data-label="Date">${new Date(transaction.date).toLocaleDateString()}</td>
+                        <td data-label="Referral Code">${transaction.referralCode}</td>
+                    `;
+                    transactionTableBody.appendChild(row);
+
+                    totalDonations += parseFloat(transaction.amount);
+                });
+
+                totalDonationsElement.textContent = totalDonations.toFixed(2);
+                noTransactionsMessage.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error fetching transactions:', error);
+            });
+        }
+
+        window.onload = populateTransactions;
+    </script>
+</body>
+</html>
