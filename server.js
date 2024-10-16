@@ -10,11 +10,6 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const users = {
-    'manas': 'manas@2301',
-    'dummy': 'dummy@23'
-};
-
 let transactions = [];
 
 app.get('/index', (req, res) => {
@@ -23,14 +18,15 @@ app.get('/index', (req, res) => {
 
 app.post('/index', (req, res) => {
     const { username, password } = req.body;
-
-    if (users[username] && users[username] === password) {
+    
+    if (username && password) {
         const userData = { username, referralCode: 'manas2301' };
         res.json(userData);
     } else {
-        res.status(401).json({ message: 'Login failed! Please check your username and password.' });
+        res.status(401).json({ message: 'Login failed! Please provide a valid username and password.' });
     }
 });
+
 
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
