@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PT Sans", sans-serif;
+        }
+
+        body,
+        html {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-page {
+            background-color: white;
+            padding: 40px 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #34495e;
+        }
+
+        #errorMessage {
+            color: red;
+            margin-top: 10px;
+            display: none; 
+        }
+
+        @media (max-width: 768px) {
+            .login-page {
+                padding: 30px 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .input-field {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            button {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-page {
+                padding: 20px 15px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .input-field {
+                padding: 6px;
+                font-size: 12px;
+            }
+
+            button {
+                padding: 6px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-page">
+            <h2>Login</h2>
+            <form id="loginForm" aria-label="Login Form">
+                <input type="text" id="username" class="input-field" placeholder="Username" required aria-required="true" autocomplete="off">
+                <input type="password" id="password" class="input-field" placeholder="Password" required aria-required="true">
+                <button type="submit" id="btn">Login</button>
+                <div id="errorMessage" aria-live="assertive"></div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/index', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Login failed! Please check your username and password.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                sessionStorage.setItem('userData', JSON.stringify(data));
+                window.location.href = 'dashboard.html';
+            })
+            .catch(error => {
+                document.getElementById('errorMessage').textContent = error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+
+</html>
